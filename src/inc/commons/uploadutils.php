@@ -73,7 +73,23 @@ class UploadUtils
 			if($isRealFile){
 				move_uploaded_file($toret["tmpName"],$toret["destination"]);
 			}else{
-				rename($toret["tmpName"],$toret["destination"]);
+                try {
+                    rename($toret["tmpName"],$toret["destination"]);
+                }
+                catch(Exception $ex) {
+                    if(!file_exists($toret["destination"])) {
+                        $from = fopen($toret["tmpName"], 'r');
+                        if(!is_resource($from))
+                            throw new Exception('Cannot open file: ' + $toret["tmpName"]);
+                        $to = fopen($toret["destination"], 'x');
+                        if(!is_resource($to))
+                            throw new Exception('Cannot open file: ' + $toret["destination"]);
+                        if(stream_copy_to_stream($from, $to) <= 0)
+                                throw new Exception ('Cannot copy streams.');
+                        fclose($from);
+                        fclose($to);
+                    }
+                }
 			}
           }
         }

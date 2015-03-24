@@ -23,7 +23,7 @@ class Utils
 	{
 		$name = tempnam(sys_get_temp_dir(), '');
 		if($data !=null){
-			file_put_contents($name,$data);
+			file_put_contents($name,rtrim($data, "\n\r"));
 		}
 		return $name;
 	}

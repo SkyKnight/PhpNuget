@@ -44,6 +44,8 @@ class ZipManager
     
     function GenerateInfos() {
         $zip = zip_open($this->zipFile);
+        if(!is_resource($zip))
+            throw new Exception ('Cannot open zipfile: '.$this->zipFile.', code: '.$zip);
         $folder_count   = 0;
         $file_count     = 0;
         $unzipped_size  = 0;
