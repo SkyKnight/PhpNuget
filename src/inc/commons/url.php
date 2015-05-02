@@ -3,6 +3,16 @@
 class UrlUtils
 {
 	public static $_data;
+    private static $_get;
+    private static $_post;
+    private static $_isInitialized = false;
+    
+    private static function InitHttpData() {
+        if(self::$_isInitialized)
+            return;
+        self::$_get = array_change_key_case($_GET, CASE_LOWER);
+        self::$_post = array_change_key_case($_POST, CASE_LOWER);
+    }
 	
 	public static function CurrentUrl($requestUri = "") {
         $pageURL = 'http';
@@ -84,15 +94,17 @@ class UrlUtils
 	
 	public static function GetRequestParam($key,$verb = "all")
 	{
+        self::InitHttpData();
+        $key = strtolower($key);
 		$verb = strtolower($verb);
 		if($verb=="all" || $verb=="get"){
-			if(array_key_exists($key,$_GET)){
-				return $_GET[$key];
+			if(array_key_exists($key,self::$_get)){
+				return self::$_get[$key];
 			}
 		}
 		if($verb=="all" || $verb=="post"){
-			if(array_key_exists($key,$_POST)){
-				return $_POST[$key];
+			if(array_key_exists($key,self::$_post)){
+				return self::$_post[$key];
 			}
 		}
 		if($verb=="all" || $verb=="put" || $verb=="post"){
@@ -114,15 +126,17 @@ class UrlUtils
 	
 	public static function GetRequestParamOrDefault($key,$default,$verb = "all")
 	{
+        self::InitHttpData();
+        $key = strtolower($key);
 		$verb = strtolower($verb);
 		if($verb=="all" || $verb=="get"){
-			if(array_key_exists($key,$_GET)){
-				return $_GET[$key];
+			if(array_key_exists($key,self::$_get)){
+				return self::$_get[$key];
 			}
 		}
 		if($verb=="all" || $verb=="post"){
-			if(array_key_exists($key,$_POST)){
-				return $_POST[$key];
+			if(array_key_exists($key,self::$_post)){
+				return self::$_post[$key];
 			}
 		}
 		if($verb=="all" || $verb=="put" || $verb=="post"){
